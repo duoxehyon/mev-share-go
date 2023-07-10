@@ -37,15 +37,14 @@ type EventHistoryInfo struct {
 
 // Gets info about historical mev-share data.
 func (c *InternalClient) EventHistoryInfo() (*EventHistoryInfo, error) {
-	url := c.baseURL + "/api/v1/history/info"
+	url := c.BaseURL + "/api/v1/history/info"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	client := http.DefaultClient
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +65,8 @@ func (c *InternalClient) EventHistoryInfo() (*EventHistoryInfo, error) {
 }
 
 // Gets historical mev-share data.
-func (c *InternalClient) GetEventHistory(params EventHistoryParams) (*[]EventHistory, error) {
-	url := c.baseURL + "/api/v1/history"
+func (c *InternalClient) GetEventHistory(params EventHistoryParams) ([]EventHistory, error) {
+	url := c.BaseURL + "/api/v1/history"
 
 	jsonParams, err := json.Marshal(params)
 	if err != nil {
@@ -80,14 +79,12 @@ func (c *InternalClient) GetEventHistory(params EventHistoryParams) (*[]EventHis
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	client := http.DefaultClient
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
@@ -98,5 +95,5 @@ func (c *InternalClient) GetEventHistory(params EventHistoryParams) (*[]EventHis
 		return nil, err
 	}
 
-	return &eventHistory, nil
+	return eventHistory, nil
 }
