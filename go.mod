@@ -1,4 +1,4 @@
-module matchmaker
+module github.com/duoxehyon/mev-share-go
 
 go 1.19
 
