@@ -1,4 +1,4 @@
-# MEV-Share 
+# MEV-Share Client
 
 Client library for MEV-Share written in Golang.
 
