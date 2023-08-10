@@ -3,10 +3,10 @@ package sse
 import (
 	"encoding/hex"
 	"encoding/json"
-	"math/big"
-	"strings"
 	"github.com/duoxehyon/mev-share-go/shared"
 	"github.com/ethereum/go-ethereum/common"
+	"math/big"
+	"strings"
 )
 
 // Event represents a matchmaker event sent from sse subscription.
@@ -18,7 +18,7 @@ type Event struct {
 // MatchMakerEvent represents the pending transaction hints sent by matchmaker.
 type MatchMakerEvent struct {
 	Hash        common.Hash          `json:"hash"`
-	Logs        []shared.Log                `json:"logs,omitempty"`
+	Logs        []shared.Log         `json:"logs,omitempty"`
 	Txs         []PendingTransaction `json:"txs,omitempty"`
 	MevGasPrice *big.Int             `json:"mevGasPrice,omitempty"`
 	GasUsed     *big.Int             `json:"gasUsed,omitempty"`
