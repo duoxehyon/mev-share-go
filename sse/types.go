@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"math/big"
 	"strings"
-
+	"github.com/duoxehyon/mev-share-go/shared"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -18,7 +18,7 @@ type Event struct {
 // MatchMakerEvent represents the pending transaction hints sent by matchmaker.
 type MatchMakerEvent struct {
 	Hash        common.Hash          `json:"hash"`
-	Logs        []Log                `json:"logs,omitempty"`
+	Logs        []shared.Log                `json:"logs,omitempty"`
 	Txs         []PendingTransaction `json:"txs,omitempty"`
 	MevGasPrice *big.Int             `json:"mevGasPrice,omitempty"`
 	GasUsed     *big.Int             `json:"gasUsed,omitempty"`
@@ -62,45 +62,6 @@ func (t *PendingTransaction) UnmarshalJSON(data []byte) error {
 		if err == nil && len(decoded) >= 4 {
 			copy(t.FunctionSelector[:], decoded[:4])
 		}
-	}
-
-	return nil
-}
-
-// Custom type because of hex string to bytes decoding error while using default geth.Log
-type Log struct {
-	Address common.Address `json:"address"`
-	Topics  []common.Hash  `json:"topics"`
-	Data    []byte         `json:"data,omitempty"`
-}
-
-// UnmarshalJSON unmarshals JSON data into a Log.
-func (l *Log) UnmarshalJSON(data []byte) error {
-	var temp struct {
-		Address common.Address `json:"address"`
-		Topics  []common.Hash  `json:"topics"`
-		Data    string         `json:"data,omitempty"`
-	}
-	if err := json.Unmarshal(data, &temp); err != nil {
-		return err
-	}
-
-	l.Address = temp.Address
-	l.Topics = temp.Topics
-
-	if temp.Data != "" {
-		if strings.HasPrefix(temp.Data, "0x") {
-			temp.Data = temp.Data[2:]
-		}
-
-		decoded, err := hex.DecodeString(temp.Data)
-		if err != nil {
-			return err
-		}
-
-		l.Data = decoded
-	} else {
-		l.Data = nil
 	}
 
 	return nil
