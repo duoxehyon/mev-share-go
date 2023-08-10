@@ -86,7 +86,7 @@ func (c *Client) SendPrivateTransaction(signedRawTx string, options PrivateTxOpt
 		return "", err
 	}
 
-	res, err := c.CallWithSig("eth_sendPrivateTransaction", tx)
+	res, err := c.CallWithSig("eth_sendPrivateTransaction", []interface{}{tx})
 	if err != nil {
 		return "", err
 	}
@@ -98,4 +98,34 @@ func (c *Client) SendPrivateTransaction(signedRawTx string, options PrivateTxOpt
 	}
 
 	return hash, nil
+}
+
+func (c *Client) SendBundle(bundle MevSendBundleParams) (*MevSendBundleResponse, error) {
+	res, err := c.CallWithSig("mev_sendBundle", []interface{}{bundle})
+	if err != nil {
+		return nil, err
+	}
+
+	var bundleHash MevSendBundleResponse
+	err = json.Unmarshal(res, &bundleHash)
+	if err != nil {
+		return nil, err
+	}
+
+	return &bundleHash, nil
+}
+
+func (c *Client) SimBundle(bundle MevSendBundleParams, simOverrides SimBundleOverrides) (*SimBundleResponse, error) {
+	res, err := c.CallWithSig("mev_sendBundle", []interface{}{bundle, simOverrides})
+	if err != nil {
+		return nil, err
+	}
+
+	var bundleHash SimBundleResponse
+	err = json.Unmarshal(res, &bundleHash)
+	if err != nil {
+		return nil, err
+	}
+
+	return &bundleHash, nil
 }

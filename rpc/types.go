@@ -119,7 +119,7 @@ type PrivateTxOptions struct {
 }
 
 // Encodes data for mev_sendPrivateTransaction
-func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) ([]interface{}, error) {
+func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) (interface{}, error) {
 	data := struct {
 		Tx             string
 		MaxBlockNumber uint64
@@ -142,7 +142,7 @@ func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) ([]interf
 		},
 	}
 
-	return []interface{}{data}, nil
+	return data, nil
 }
 
 // Bundle simulation parameters for mev_simBundle
