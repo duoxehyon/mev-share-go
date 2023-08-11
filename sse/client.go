@@ -27,8 +27,7 @@ type Subscription struct {
 	eventChan chan<- Event
 }
 
-// Subscribes to matchmaker events and sends them to the provided event channel.
-// It returns a Subscription.
+// Subscribes to matchmaker events.
 func (c *InternalClient) Subscribe(eventChan chan<- Event) (*Subscription, error) {
 	req, err := http.NewRequest("GET", c.BaseURL, nil)
 	if err != nil {
