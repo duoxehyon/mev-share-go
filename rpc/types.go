@@ -121,6 +121,7 @@ type MevSendBundleResponse struct {
 	BundleHash common.Hash `json:"bundleHash"`
 }
 
+// `eth_sendPrivateTransaction` parameters
 type PrivateTxOptions struct {
 	Hints          Hints
 	MaxBlockNumber hexutil.Uint64
