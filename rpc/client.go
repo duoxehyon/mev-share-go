@@ -102,8 +102,8 @@ func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, erro
 }
 
 // Send private transaction `eth_sendPrivateTransaction`
-func (c *Client) SendPrivateTransaction(signedRawTx string, options PrivateTxOptions) (*common.Hash, error) {
-	tx := encodePrivateTxParams(signedRawTx, &options)
+func (c *Client) SendPrivateTransaction(signedRawTx string, options *PrivateTxOptions) (*common.Hash, error) {
+	tx := encodePrivateTxParams(signedRawTx, options)
 
 	res, err := c.CallWithSig("eth_sendPrivateTransaction", tx)
 	if err != nil {

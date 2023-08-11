@@ -41,5 +41,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(res.BundleHash)
+	fmt.Println(res.BundleHash.String())
 }
