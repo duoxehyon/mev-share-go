@@ -21,9 +21,7 @@ import (
 	"fmt"
 	"log"
 )
-``` 
 
-```go
 func main() {
 	// Create a new client
 	client := sse.New("https://mev-share.flashbots.net")
@@ -64,9 +62,7 @@ import (
 	"log"
 	"github.com/ethereum/go-ethereum/crypto"
 )
-```
 
-```go
 func main() {
 	// Initialize flashbots auth key. this key is only used for searcher reputation and is not required to hold any funds   
 	fbSigningKey, err := crypto.HexToECDSA("0000000000000000000000000000000000000000000000000000000000000001")
