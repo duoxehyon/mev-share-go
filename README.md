@@ -1,9 +1,14 @@
 # MEV-Share Client
 
-Client library for MEV-Share written in Golang.
+A simple and clean client library for MEV-Share written in Golang.
 
 Based on [MEV-Share Spec](https://github.com/flashbots/mev-share).
 
+# Usage
+
+To add library to your project:
+
+``go get github.com/duoxehyon/mev-share-go``
 
 ## Subscribing to MEV-Share Events
 
@@ -43,7 +48,7 @@ func main() {
 
 ## Sending bundles 
 
-example on how to send bundles using this client
+Example on how to send bundles using this client
 
 ```go
 package main
@@ -92,6 +97,8 @@ func main() {
 	fmt.Println(res.BundleHash)
 }
 ```
+
+For more usage examples, explore the /examples directory in the library repository.
 
 ## License
 
