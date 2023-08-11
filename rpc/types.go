@@ -2,24 +2,25 @@ package rpc
 
 import (
 	"encoding/json"
-	"github.com/duoxehyon/mev-share-go/shared"
 
+	"github.com/duoxehyon/mev-share-go/shared"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 // MevSendBundleParams represents the parameters for mev_sendBundle
 type MevSendBundleParams struct {
-	Version   string        `json:"version"`
-	Inclusion Inclusion     `json:"inclusion"`
-	Body      []BundleItem  `json:"body"`
-	Validity  Validity      `json:"validity,omitempty"`
-	Privacy   BundlePrivacy `json:"privacy,omitempty"`
+	Version   string         `json:"version"`
+	Inclusion Inclusion      `json:"inclusion"`
+	Body      []BundleItem   `json:"body"`
+	Validity  *Validity      `json:"validity,omitempty"`
+	Privacy   *BundlePrivacy `json:"privacy,omitempty"`
 }
 
 // Inclusion represents the inclusion data for mev_sendBundle
 type Inclusion struct {
-	Block    uint64  `json:"block"`
-	MaxBlock *uint64 `json:"maxBlock,omitempty"`
+	Block    hexutil.Uint64 `json:"block"`
+	MaxBlock hexutil.Uint64 `json:"maxBlock,omitempty"`
 }
 
 // Custom interface that both SignedRawTx and string types satisfy
@@ -63,6 +64,8 @@ type Hints struct {
 	FunctionSelector bool
 	Logs             bool
 	TxHash           bool
+	Hash             bool
+	SpecialLogs      bool
 }
 
 func (h *Hints) String() []string {
@@ -71,16 +74,22 @@ func (h *Hints) String() []string {
 		hints = append(hints, "calldata")
 	}
 	if h.ContractAddress {
-		hints = append(hints, "contractAddress")
+		hints = append(hints, "contract_address")
 	}
 	if h.FunctionSelector {
-		hints = append(hints, "functionSelector")
+		hints = append(hints, "function_selector")
 	}
 	if h.Logs {
 		hints = append(hints, "logs")
 	}
 	if h.TxHash {
-		hints = append(hints, "txHash")
+		hints = append(hints, "tx_hash")
+	}
+	if h.Hash {
+		hints = append(hints, "hash")
+	}
+	if h.SpecialLogs {
+		hints = append(hints, "special_logs")
 	}
 
 	return hints
@@ -114,27 +123,27 @@ type MevSendBundleResponse struct {
 
 type PrivateTxOptions struct {
 	Hints          Hints
-	MaxBlockNumber uint64
+	MaxBlockNumber hexutil.Uint64
 	Builders       []string
 }
 
 // Encodes data for mev_sendPrivateTransaction
-func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) (interface{}, error) {
+func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) any {
 	data := struct {
-		Tx             string
-		MaxBlockNumber uint64
+		Tx             string         `json:"tx"`
+		MaxBlockNumber hexutil.Uint64 `json:"maxBlockNumber,omitempty"`
 		Preferences    struct {
-			Fast     bool
-			Privacy  []string
-			Builders []string
-		}
+			Fast     bool     `json:"fast"`
+			Privacy  []string `json:"privacy,omitempty"`
+			Builders []string `json:"builders,omitempty"`
+		} `json:"preferences"`
 	}{
 		Tx:             signedTx,
 		MaxBlockNumber: options.MaxBlockNumber,
 		Preferences: struct {
-			Fast     bool
-			Privacy  []string
-			Builders []string
+			Fast     bool     `json:"fast"`
+			Privacy  []string `json:"privacy,omitempty"`
+			Builders []string `json:"builders,omitempty"`
 		}{
 			Fast:     true,
 			Privacy:  options.Hints.String(),
@@ -142,43 +151,42 @@ func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) (interfac
 		},
 	}
 
-	return data, nil
+	return data
 }
 
 // Bundle simulation parameters for mev_simBundle
 type SimBundleOverrides struct {
 	// Block used for simulation state. Defaults to latest block
-	ParentBlock uint64 `json:"parentBlock,omitempty"`
+	ParentBlock hexutil.Uint64 `json:"parentBlock,omitempty"`
 	// Block number used for simulation, defaults to parentBlock.number + 1
-	BlockNumber uint64 `json:"blockNumber,omitempty"`
+	BlockNumber *hexutil.Big `json:"blockNumber,omitempty"`
 	// Coinbase used for simulation, defaults to parentBlock.coinbase
-	Coinbase uint64 `json:"coinbase,omitempty"`
+	Coinbase *common.Address `json:"coinbase,omitempty"`
 	// Timestamp used for simulation, defaults to parentBlock.timestamp + 12
-	Timestamp uint64 `json:"timestamp,omitempty"`
+	Timestamp hexutil.Uint64 `json:"timestamp,omitempty"`
 	// Gas limit used for simulation, defaults to parentBlock.gasLimit
-	GasLimit uint64 `json:"gasLimit,omitempty"`
+	GasLimit hexutil.Uint64 `json:"gasLimit,omitempty"`
 	// Base fee used for simulation, defaults to parentBlock.baseFeePerGas
-	BaseFee uint64 `json:"baseFee,omitempty"`
+	BaseFee *hexutil.Big `json:"baseFee,omitempty"`
 	// Timeout in seconds, defaults to 5
 	Timeout uint64 `json:"timeout,omitempty"`
 }
 
 // Response for mev_simBundle
 type SimBundleResponse struct {
-	/// Whether the simulation was successful
 	Success bool `json:"success"`
 	// Error if simulation failed
-	Error *string `json:"error,omitempty"`
+	Error string `json:"error,omitempty"`
 	// The block number of the simulated block
-	StateBlock uint64 `json:"stateBlock"`
+	StateBlock hexutil.Uint64 `json:"stateBlock"`
 	// The gas price of the simulated block
-	MevGasPrice uint64 `json:"mevGasPrice"`
+	MevGasPrice hexutil.Big `json:"mevGasPrice"`
 	// The profit of the simulated block
-	Profit uint64 `json:"profit"`
+	Profit hexutil.Big `json:"profit"`
 	// The refundable value of the simulated block
-	RefundableValue uint64 `json:"refundableValue"`
+	RefundableValue hexutil.Big `json:"refundableValue"`
 	// The gas used by the simulated block.
-	GasUsed uint64 `json:"gasUsed"`
+	GasUsed hexutil.Uint64 `json:"gasUsed"`
 	// Logs returned by mev_simBundle.
 	Logs *[]SimBundleLogs `json:"logs,omitempty"`
 }

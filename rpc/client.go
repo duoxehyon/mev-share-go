@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"crypto/ecdsa"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -20,10 +23,27 @@ type RequestBody struct {
 	Params  []interface{} `json:"params"`
 }
 
+// RPC client
 type Client struct {
 	httpClient *http.Client
 	privKey    *ecdsa.PrivateKey
 	baseURL    string
+}
+
+type Error struct {
+	Code    int64  `json:"code"`
+	Message string `json:"message"`
+}
+
+func (err Error) Error() error {
+	return errors.New(fmt.Sprintf("Server Returned error, Error Code: %d, Message: %s", err.Code, err.Message))
+}
+
+type Response[T any] struct {
+	ID      int64  `json:"id"`
+	Result  T      `json:"result"`
+	Error   *Error `json:"error,omitempty"`
+	JSONRPC string `json:"jsonrpc"`
 }
 
 // NewClient creates a new instance of the API client.
@@ -35,6 +55,7 @@ func NewClient(clientURL string, auth ecdsa.PrivateKey) *Client {
 	}
 }
 
+// Does api requests with Flashbots signature header
 func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, error) {
 	request := RequestBody{
 		ID:      777,
@@ -80,52 +101,66 @@ func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, erro
 	return data, nil
 }
 
-func (c *Client) SendPrivateTransaction(signedRawTx string, options PrivateTxOptions) (string, error) {
-	tx, err := encodePrivateTxParams(signedRawTx, &options)
+// Send private transaction `eth_sendPrivateTransaction`
+func (c *Client) SendPrivateTransaction(signedRawTx string, options PrivateTxOptions) (*common.Hash, error) {
+	tx := encodePrivateTxParams(signedRawTx, &options)
+
+	res, err := c.CallWithSig("eth_sendPrivateTransaction", tx)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	res, err := c.CallWithSig("eth_sendPrivateTransaction", []interface{}{tx})
+	var decoded Response[common.Hash]
+	err = json.Unmarshal(res, &decoded)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	var hash string
-	err = json.Unmarshal(res, &hash)
-	if err != nil {
-		return "", err
+	if decoded.Error != nil {
+		return nil, decoded.Error.Error()
 	}
 
-	return hash, nil
+	return &decoded.Result, nil
 }
 
+// Send mev-share bundle `mev_sendBundle`
 func (c *Client) SendBundle(bundle MevSendBundleParams) (*MevSendBundleResponse, error) {
-	res, err := c.CallWithSig("mev_sendBundle", []interface{}{bundle})
+	bundle.Version = "v0.1"
+	res, err := c.CallWithSig("mev_sendBundle", bundle)
 	if err != nil {
 		return nil, err
 	}
 
-	var bundleHash MevSendBundleResponse
-	err = json.Unmarshal(res, &bundleHash)
+	var decoded Response[MevSendBundleResponse]
+	err = json.Unmarshal(res, &decoded)
 	if err != nil {
 		return nil, err
 	}
 
-	return &bundleHash, nil
+	if decoded.Error != nil {
+		return nil, decoded.Error.Error()
+	}
+
+	return &decoded.Result, nil
 }
 
+// Simulate bundle `mev_simBundle`
 func (c *Client) SimBundle(bundle MevSendBundleParams, simOverrides SimBundleOverrides) (*SimBundleResponse, error) {
-	res, err := c.CallWithSig("mev_sendBundle", []interface{}{bundle, simOverrides})
+	bundle.Version = "v0.1"
+	res, err := c.CallWithSig("mev_simBundle", bundle, simOverrides)
 	if err != nil {
 		return nil, err
 	}
 
-	var bundleHash SimBundleResponse
-	err = json.Unmarshal(res, &bundleHash)
+	var decoded Response[SimBundleResponse]
+	err = json.Unmarshal(res, &decoded)
 	if err != nil {
 		return nil, err
 	}
 
-	return &bundleHash, nil
+	if decoded.Error != nil {
+		return nil, decoded.Error.Error()
+	}
+
+	return &decoded.Result, nil
 }

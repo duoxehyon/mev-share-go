@@ -28,7 +28,7 @@ type MatchMakerEvent struct {
 type PendingTransaction struct {
 	To               common.Address `json:"to"`
 	FunctionSelector [4]byte        `json:"functionSelector,omitempty"`
-	CallData         []byte         `json:"callData,omitempty"`
+	CallData         []byte         `json:"callData,omitempty"` // Could be replaces with geth.hexutil type
 	MevGasPrice      *big.Int       `json:"mevGasPrice,omitempty"`
 	GasUsed          *big.Int       `json:"gasUsed,omitempty"`
 }
