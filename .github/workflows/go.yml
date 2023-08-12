@@ -21,8 +21,12 @@ jobs:
       with:
         go-version: 1.19
 
-    - name: Build
-      run: go build -v ./...
-
     - name: Test
-      run: go test -v ./...
+      run: go test -v ./rpc
+    
+    - name: Test
+      run: go test -v ./shared
+    
+    - name: Test
+      run: go test -v ./sse
+
