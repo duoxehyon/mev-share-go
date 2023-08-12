@@ -7,19 +7,19 @@ import (
 	"strings"
 )
 
-// InternalClient is a client for the matchmaker.
+// InternalClient is a client for the matchmaker
 type InternalClient struct {
-	BaseURL string // BaseURL is the base URL for the matchmaker.
+	BaseURL string // BaseURL is the base URL for the matchmaker
 }
 
-// New creates a new InternalClient for the matchmaker with the given base URL.
+// New creates a new InternalClient for the matchmaker with the given base URL
 func New(baseURL string) *InternalClient {
 	return &InternalClient{
 		BaseURL: baseURL,
 	}
 }
 
-// Subscription represents a subscription to matchmaker events.
+// Subscription represents a subscription to matchmaker events
 type Subscription struct {
 	client    http.Client
 	stopper   chan struct{}
@@ -27,7 +27,7 @@ type Subscription struct {
 	eventChan chan<- Event
 }
 
-// Subscribes to matchmaker events.
+// Subscribes to matchmaker events and returns a type that can be used to control the subscription
 func (c *InternalClient) Subscribe(eventChan chan<- Event) (*Subscription, error) {
 	req, err := http.NewRequest("GET", c.BaseURL, nil)
 	if err != nil {
@@ -52,7 +52,7 @@ func (c *InternalClient) Subscribe(eventChan chan<- Event) (*Subscription, error
 	return sub, nil
 }
 
-// readEvents reads the events and sends them to the event channel.
+// readEvents reads the events and sends them to the event channel
 func (s *Subscription) readEvents() {
 	for s.scanner.Scan() {
 		data := s.scanner.Text()
@@ -81,7 +81,7 @@ func (s *Subscription) readEvents() {
 	}
 }
 
-// Stop stops the subscription to matchmaker events.
+// Stop stops the subscription to matchmaker events
 func (s *Subscription) Stop() {
 	s.stopper <- struct{}{}
 }

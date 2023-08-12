@@ -56,6 +56,7 @@ func NewClient(clientURL string, auth *ecdsa.PrivateKey) *Client {
 }
 
 // Does api requests with Flashbots signature header
+// returns the body
 func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, error) {
 	request := RequestBody{
 		ID:      777,
@@ -101,7 +102,10 @@ func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, erro
 	return data, nil
 }
 
-// Send private transaction `eth_sendPrivateTransaction`
+// Send private transaction ~`eth_sendPrivateTransaction`
+// signedRawTx - transaction with nonce and vrs values
+// options - options for private tx hints, builders, inclution, etc...
+// returns the Transaction hash of the sent transaction
 func (c *Client) SendPrivateTransaction(signedRawTx string, options *PrivateTxOptions) (*common.Hash, error) {
 	tx := encodePrivateTxParams(signedRawTx, options)
 
@@ -123,7 +127,9 @@ func (c *Client) SendPrivateTransaction(signedRawTx string, options *PrivateTxOp
 	return &decoded.Result, nil
 }
 
-// Send mev-share bundle `mev_sendBundle`
+// Send mev-share bundle  ~`mev_sendBundle`
+// bundle - the bundle with all transactions / hashes
+// returns the bundle hash / error
 func (c *Client) SendBundle(bundle MevSendBundleParams) (*MevSendBundleResponse, error) {
 	bundle.Version = "v0.1"
 	res, err := c.CallWithSig("mev_sendBundle", bundle)
@@ -144,7 +150,10 @@ func (c *Client) SendBundle(bundle MevSendBundleParams) (*MevSendBundleResponse,
 	return &decoded.Result, nil
 }
 
-// Simulate bundle `mev_simBundle`
+// Simulate bundle ~`mev_simBundle`
+// bundle - the bundle with all transactions / hashes
+// simOverrides - given values will be overwritten when doing the simulation
+// returns the simulation result / error
 func (c *Client) SimBundle(bundle MevSendBundleParams, simOverrides SimBundleOverrides) (*SimBundleResponse, error) {
 	bundle.Version = "v0.1"
 	res, err := c.CallWithSig("mev_simBundle", bundle, simOverrides)

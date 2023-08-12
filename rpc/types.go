@@ -40,13 +40,13 @@ type SignedRawTx struct {
 	CanRevert bool   `json:"canRevert,omitempty"`
 }
 
-// Validity represents the validity conditions for the bundle.
+// Validity represents the validity conditions for the bundle
 type Validity struct {
 	Refund       []Refund       `json:"refund,omitempty"`
 	RefundConfig []RefundConfig `json:"refundConfig,omitempty"`
 }
 
-// RefundConfig represents the refund configuration for the bundle.
+// RefundConfig represents the refund configuration for the bundle
 type RefundConfig struct {
 	BodyIdx int `json:"bodyIdx"`
 	Percent int `json:"percent"`
@@ -57,7 +57,7 @@ type Refund struct {
 	Percent int            `json:"percent"`
 }
 
-// Hints represents hints for privacy preferences.
+// Hints represents hints for privacy preferences
 type Hints struct {
 	CallData         bool
 	ContractAddress  bool
@@ -95,13 +95,13 @@ func (h *Hints) String() []string {
 	return hints
 }
 
-// BundlePrivacy represents the privacy preferences for the bundle.
+// BundlePrivacy represents the privacy preferences for the bundle
 type BundlePrivacy struct {
 	Hints    Hints    `json:"-"`
 	Builders []string `json:"builders,omitempty"`
 }
 
-// MarshalJSON implements the custom JSON marshaling for BundlePrivacy.
+// MarshalJSON implements the custom JSON marshaling for BundlePrivacy
 func (bp BundlePrivacy) MarshalJSON() ([]byte, error) {
 	hints := bp.Hints.String()
 
@@ -186,9 +186,9 @@ type SimBundleResponse struct {
 	Profit hexutil.Big `json:"profit"`
 	// The refundable value of the simulated block
 	RefundableValue hexutil.Big `json:"refundableValue"`
-	// The gas used by the simulated block.
+	// The gas used by the simulated block
 	GasUsed hexutil.Uint64 `json:"gasUsed"`
-	// Logs returned by mev_simBundle.
+	// Logs returned by mev_simBundle
 	Logs *[]SimBundleLogs `json:"logs,omitempty"`
 }
 
