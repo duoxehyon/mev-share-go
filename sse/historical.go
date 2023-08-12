@@ -35,7 +35,7 @@ type EventHistoryInfo struct {
 	MaxLimit     uint64 `json:"maxLimit"`
 }
 
-// Gets info about historical mev-share data.
+// Gets info about historical mev-share data
 func (c *InternalClient) EventHistoryInfo() (*EventHistoryInfo, error) {
 	url := c.BaseURL + "/api/v1/history/info"
 
@@ -64,7 +64,7 @@ func (c *InternalClient) EventHistoryInfo() (*EventHistoryInfo, error) {
 	return &eventHistoryInfo, nil
 }
 
-// Gets historical mev-share data.
+// Gets historical mev-share data
 func (c *InternalClient) GetEventHistory(params EventHistoryParams) ([]EventHistory, error) {
 	url := c.BaseURL + "/api/v1/history"
 

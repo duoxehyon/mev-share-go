@@ -25,8 +25,8 @@ func (l *Log) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	l.Address = temp.Address
 	l.Topics = temp.Topics
+	l.Address = temp.Address
 
 	if temp.Data != "" {
 		if strings.HasPrefix(temp.Data, "0x") {

@@ -46,7 +46,7 @@ type Response[T any] struct {
 	JSONRPC string `json:"jsonrpc"`
 }
 
-// NewClient creates a new instance of the API client.
+// NewClient creates a new instance of the API client
 func NewClient(clientURL string, auth *ecdsa.PrivateKey) *Client {
 	return &Client{
 		httpClient: &http.Client{},

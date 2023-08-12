@@ -59,8 +59,8 @@ func TestBundlePrivacy_MarshalJSON(t *testing.T) {
 		FunctionSelector: true,
 		Logs:             true,
 		TxHash:           true,
-		Hash:             true,
 		SpecialLogs:      true,
+		Hash:             true,
 	}
 
 	bundlePrivacy := BundlePrivacy{

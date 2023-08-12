@@ -42,9 +42,9 @@ func (c *InternalClient) Subscribe(eventChan chan<- Event) (*Subscription, error
 
 	sub := &Subscription{
 		client:    client,
+		eventChan: eventChan,
 		stopper:   make(chan struct{}),
 		scanner:   bufio.NewScanner(resp.Body),
-		eventChan: eventChan,
 	}
 
 	go sub.readEvents()

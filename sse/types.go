@@ -46,9 +46,9 @@ func (t *PendingTransaction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	t.To = temp.To
 	t.MevGasPrice = temp.MevGasPrice
 	t.GasUsed = temp.GasUsed
+	t.To = temp.To
 
 	if temp.CallData != "" && temp.CallData != "0x" {
 		decoded, err := hex.DecodeString(strings.TrimPrefix(temp.CallData, "0x"))

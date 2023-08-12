@@ -194,7 +194,7 @@ type SimBundleResponse struct {
 
 // Logs returned by mev_simBundle
 type SimBundleLogs struct {
-	// Logs from transactions
+	// Logs inside transactions
 	TxLogs *[]shared.Log `json:"txLogs,omitempty"`
 	// Logs for bundles inside bundle
 	BundleLogs *[]SimBundleLogs `json:"bundleLogs,omitempty"`

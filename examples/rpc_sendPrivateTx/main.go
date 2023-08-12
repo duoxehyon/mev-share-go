@@ -26,6 +26,7 @@ func main() {
 		},
 	}
 
+	// Send the private transaction
 	res, err := client.SendPrivateTransaction(txn, &options)
 	if err != nil {
 		log.Fatal(err)

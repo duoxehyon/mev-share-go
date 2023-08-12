@@ -80,7 +80,7 @@ func TestPendingTransaction_UnmarshalJSON_MissingFields(t *testing.T) {
 }
 
 func TestEvent_Data_Error(t *testing.T) {
-	errMsg := "test error"
+	errMsg := "some error"
 	event := Event{Error: errors.New(errMsg)}
 
 	assert.Error(t, event.Error)

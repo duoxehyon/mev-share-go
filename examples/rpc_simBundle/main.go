@@ -32,15 +32,18 @@ func main() {
 		Block: 17891729,
 	}
 
+	// Make the bundle
 	req := rpc.MevSendBundleParams{
 		Body:      txns,
 		Inclusion: inclusion,
 	}
 
+	// Add overrides
 	overrides := rpc.SimBundleOverrides{
 		ParentBlock: hexutil.Uint64(1000000),
 	}
 
+	// Simulate the bundle
 	res, err := client.SimBundle(req, overrides)
 	if err != nil {
 		log.Fatal(err)

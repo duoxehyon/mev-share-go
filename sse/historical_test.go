@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/assert"
-	"net/http/httptest"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -31,8 +31,8 @@ func TestInternalClient_EventHistoryInfo(t *testing.T) {
 	assert.Equal(t, uint64(100), info.Count)
 	assert.Equal(t, uint64(10000), info.MinBlock)
 	assert.Equal(t, uint64(20000), info.MaxBlock)
-	assert.Equal(t, uint64(1631419200), info.MinTimestamp)
 	assert.Equal(t, uint64(1000), info.MaxLimit)
+	assert.Equal(t, uint64(1631419200), info.MinTimestamp)
 }
 
 func TestInternalClient_GetEventHistory(t *testing.T) {
