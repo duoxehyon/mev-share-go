@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/duoxehyon/mev-share-go/shared"
 	"github.com/ethereum/go-ethereum/common"
-	"math/big"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"strings"
 )
 
@@ -20,8 +20,8 @@ type MatchMakerEvent struct {
 	Hash        common.Hash          `json:"hash"`
 	Logs        []shared.Log         `json:"logs,omitempty"`
 	Txs         []PendingTransaction `json:"txs,omitempty"`
-	MevGasPrice *big.Int             `json:"mevGasPrice,omitempty"`
-	GasUsed     *big.Int             `json:"gasUsed,omitempty"`
+	MevGasPrice *hexutil.Big         `json:"mevGasPrice,omitempty"`
+	GasUsed     *hexutil.Big         `json:"gasUsed,omitempty"`
 }
 
 // PendingTransaction represents the hits revealed by the matchmaker about the transaction / bundle.
@@ -29,8 +29,8 @@ type PendingTransaction struct {
 	To               common.Address `json:"to"`
 	FunctionSelector [4]byte        `json:"functionSelector,omitempty"`
 	CallData         []byte         `json:"callData,omitempty"` // Could be replaces with geth.hexutil type
-	MevGasPrice      *big.Int       `json:"mevGasPrice,omitempty"`
-	GasUsed          *big.Int       `json:"gasUsed,omitempty"`
+	MevGasPrice      *hexutil.Big   `json:"mevGasPrice,omitempty"`
+	GasUsed          *hexutil.Big   `json:"gasUsed,omitempty"`
 }
 
 // UnmarshalJSON unmarshals JSON data into a PendingTransaction.
@@ -39,8 +39,8 @@ func (t *PendingTransaction) UnmarshalJSON(data []byte) error {
 		To               common.Address `json:"to"`
 		FunctionSelector string         `json:"functionSelector,omitempty"`
 		CallData         string         `json:"callData,omitempty"`
-		MevGasPrice      *big.Int       `json:"mevGasPrice,omitempty"`
-		GasUsed          *big.Int       `json:"gasUsed,omitempty"`
+		MevGasPrice      *hexutil.Big   `json:"mevGasPrice,omitempty"`
+		GasUsed          *hexutil.Big   `json:"gasUsed,omitempty"`
 	}
 	if err := json.Unmarshal(data, &temp); err != nil {
 		return err
