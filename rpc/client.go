@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/ecdsa"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -30,15 +29,17 @@ type Client struct {
 	baseURL    string
 }
 
+// If request returns an error
 type Error struct {
 	Code    int64  `json:"code"`
 	Message string `json:"message"`
 }
 
 func (err Error) Error() error {
-	return errors.New(fmt.Sprintf("Server Returned error, Error Code: %d, Message: %s", err.Code, err.Message))
+	return fmt.Errorf("server returned error, Error Code: %d, Message: %s", err.Code, err.Message)
 }
 
+// Regular response
 type Response[T any] struct {
 	ID      int64  `json:"id"`
 	Result  T      `json:"result"`

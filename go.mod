@@ -15,4 +15,5 @@ require (
 	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	honnef.co/go/tools v0.4.3 // indirect
 )

@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/ethereum/go-ethereum/common"
-	"strings"
 )
 
 // Custom type because of hex string to bytes decoding error while using default geth.Log
@@ -29,9 +28,7 @@ func (l *Log) UnmarshalJSON(data []byte) error {
 	l.Address = temp.Address
 
 	if temp.Data != "" {
-		if strings.HasPrefix(temp.Data, "0x") {
-			temp.Data = temp.Data[2:]
-		}
+		temp.Data = temp.Data[2:]
 
 		decoded, err := hex.DecodeString(temp.Data)
 		if err != nil {

@@ -31,10 +31,12 @@ type BundleItem interface {
 func (t MevShareTxHash) isTxType() {}
 func (t SignedRawTx) isTxType()    {}
 
+// Mev-share transaction hash
 type MevShareTxHash struct {
 	Hash string
 }
 
+// Regular transaction
 type SignedRawTx struct {
 	Tx        string `json:"tx,omitempty"`
 	CanRevert bool   `json:"canRevert,omitempty"`
@@ -52,6 +54,7 @@ type RefundConfig struct {
 	Percent int `json:"percent"`
 }
 
+// Refund address and percentage
 type Refund struct {
 	Address common.Address `json:"address"`
 	Percent int            `json:"percent"`
