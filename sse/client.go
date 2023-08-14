@@ -63,19 +63,22 @@ func (s *Subscription) readEvents() {
 		data = strings.TrimPrefix(data, "data: ")
 
 		var event MatchMakerEvent
-		if err := json.Unmarshal([]byte(data), &event); err != nil {
-			s.eventChan <- Event{
-				Error: err,
-			}
-			continue
-		}
+		err := json.Unmarshal([]byte(data), &event)
 
 		select {
 		case <-s.stopper:
+			close(s.eventChan)
+			close(s.stopper)
 			return
 		default:
-			s.eventChan <- Event{
-				Data: &event,
+			if err != nil {
+				s.eventChan <- Event{
+					Error: err,
+				}
+			} else {
+				s.eventChan <- Event{
+					Data: &event,
+				}
 			}
 		}
 	}
