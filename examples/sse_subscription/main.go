@@ -21,14 +21,18 @@ func main() {
 
 	// Listen for events
 	for {
-		event := <-eventChan
+		event, ok := <-eventChan
+		if !ok {
+			break
+		}
+
 		if event.Error != nil {
 			fmt.Println("Error occured: ", event.Error)
 		}
 
 		fmt.Println(event)
 
+		// The channel will stop receiving events after this
 		sub.Stop()
-		break
 	}
 }

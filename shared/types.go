@@ -6,7 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-// Custom type because of hex string to bytes decoding error while using default geth.Log
+// Log - Custom type because of hex string to bytes decoding error while using default geth.Log
 type Log struct {
 	Address common.Address `json:"address"`
 	Topics  []common.Hash  `json:"topics"`
