@@ -13,7 +13,7 @@ type InternalClient struct {
 }
 
 // New creates a new InternalClient for the matchmaker with the given base URL
-func New(baseURL string) *InternalClient {
+func New(baseURL string) SSEApiClient {
 	return &InternalClient{
 		BaseURL: baseURL,
 	}
@@ -28,7 +28,7 @@ type Subscription struct {
 }
 
 // Subscribe to matchmaker events and returns a type that can be used to control the subscription
-func (c *InternalClient) Subscribe(eventChan chan<- Event) (*Subscription, error) {
+func (c *InternalClient) Subscribe(eventChan chan<- Event) (SSESubscription, error) {
 	req, err := http.NewRequest("GET", c.BaseURL, nil)
 	if err != nil {
 		return nil, err

@@ -12,20 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewClient(t *testing.T) {
-	clientURL := "http://example.com"
-	privKey, _ := crypto.GenerateKey()
-	client := NewClient(clientURL, privKey)
-
-	assert.NotNil(t, client)
-	assert.Equal(t, clientURL, client.baseURL)
-	assert.NotNil(t, client.httpClient)
-	assert.NotNil(t, client.privKey)
-}
-
 func TestClient_CallWithSig(t *testing.T) {
 	privKey, _ := crypto.GenerateKey()
-	client := NewClient("", privKey)
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
@@ -39,7 +27,7 @@ func TestClient_CallWithSig(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(handler))
 	defer server.Close()
 
-	client.baseURL = server.URL
+	client := NewClient(server.URL, privKey)
 
 	response, err := client.CallWithSig("test_method", "param1", "param2")
 	assert.NoError(t, err)
