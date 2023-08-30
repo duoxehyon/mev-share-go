@@ -4,6 +4,8 @@ A simple and clean client library for MEV-Share written in Golang.
 
 Based on [MEV-Share Spec](https://github.com/flashbots/mev-share).
 
+go package [mev-share-go](https://pkg.go.dev/github.com/duoxehyon/mev-share-go)
+
 # Usage
 
 To add library to your project:
