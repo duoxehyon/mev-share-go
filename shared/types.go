@@ -10,7 +10,7 @@ import (
 type Log struct {
 	Address common.Address `json:"address"`
 	Topics  []common.Hash  `json:"topics"`
-	Data    []byte         `json:"data,omitempty"` // Could be replaces with geth.hexutil type
+	Data    []byte         `json:"data,omitempty"` // Could be replaced with geth.hexutil type
 }
 
 // UnmarshalJSON unmarshals JSON data into a Log.
