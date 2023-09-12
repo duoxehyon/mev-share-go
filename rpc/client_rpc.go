@@ -48,7 +48,7 @@ type Response[T any] struct {
 }
 
 // NewClient creates a new instance of the API client
-func NewClient(clientURL string, auth *ecdsa.PrivateKey) MevApiClient {
+func NewClient(clientURL string, auth *ecdsa.PrivateKey) MevAPIClient {
 	return &Client{
 		httpClient: &http.Client{},
 		baseURL:    clientURL,

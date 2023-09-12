@@ -13,7 +13,7 @@ type InternalClient struct {
 }
 
 // New creates a new InternalClient for the matchmaker with the given base URL
-func New(baseURL string) SSEApiClient {
+func New(baseURL string) SSEClient {
 	return &InternalClient{
 		BaseURL: baseURL,
 	}

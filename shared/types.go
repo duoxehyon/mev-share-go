@@ -1,3 +1,4 @@
+// Package shared is for types that are used in both sse and rpc packages
 package shared
 
 import (

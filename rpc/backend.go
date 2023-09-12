@@ -1,9 +1,10 @@
+// Package rpc is the RPC Client for `mev` api
 package rpc
 
 import "github.com/ethereum/go-ethereum/common"
 
-// MEV-Share Client abstraction
-type MevApiClient interface {
+// MevAPIClient is the MEV-Share Client abstraction
+type MevAPIClient interface {
 	// MEV-Share Api Requests with Flashbots signature header
 	CallWithSig(method string, params ...interface{}) ([]byte, error)
 	// Send bundle tom mev-share node
