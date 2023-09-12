@@ -4,6 +4,7 @@ package shared
 import (
 	"encoding/hex"
 	"encoding/json"
+
 	"github.com/ethereum/go-ethereum/common"
 )
 

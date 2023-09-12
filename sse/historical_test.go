@@ -2,11 +2,12 @@ package sse
 
 import (
 	"encoding/json"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestInternalClient_EventHistoryInfo(t *testing.T) {
@@ -20,7 +21,10 @@ func TestInternalClient_EventHistoryInfo(t *testing.T) {
 			MinTimestamp: 1631419200,
 			MaxLimit:     1000,
 		}
-		json.NewEncoder(w).Encode(info)
+		err := json.NewEncoder(w).Encode(info)
+		if err != nil {
+			panic(err)
+		}
 	}))
 	defer mockServer.Close()
 
@@ -69,7 +73,10 @@ func TestInternalClient_GetEventHistory(t *testing.T) {
 				},
 			},
 		}
-		json.NewEncoder(w).Encode(history)
+		err = json.NewEncoder(w).Encode(history)
+		if err != nil {
+			panic(err)
+		}
 	}))
 	defer mockServer.Close()
 

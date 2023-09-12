@@ -3,10 +3,11 @@ package sse
 import (
 	"encoding/hex"
 	"encoding/json"
+	"strings"
+
 	"github.com/duoxehyon/mev-share-go/shared"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"strings"
 )
 
 // Event represents a matchmaker event sent from sse subscription

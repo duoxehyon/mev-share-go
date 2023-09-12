@@ -15,7 +15,10 @@ func createMockServer() *httptest.Server {
 		w.Header().Set("Cache-Control", "no-cache")
 		w.Header().Set("Connection", "keep-alive")
 
-		w.Write([]byte("data: {\"some\":\"event\"}\n\n"))
+		_, err := w.Write([]byte("data: {\"some\":\"event\"}\n\n"))
+		if err != nil {
+			panic(err)
+		}
 	}))
 }
 
@@ -39,7 +42,6 @@ func TestInternalClient_Subscribe(t *testing.T) {
 	case <-time.After(5 * time.Second):
 		t.Error("Timed out waiting for event")
 	}
-
 }
 
 func TestSubscription_Stop(t *testing.T) {

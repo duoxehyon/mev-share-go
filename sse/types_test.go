@@ -3,10 +3,11 @@ package sse
 import (
 	"encoding/json"
 	"errors"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPendingTransaction_UnmarshalJSON(t *testing.T) {
@@ -58,6 +59,7 @@ func TestPendingTransaction_UnmarshalJSON_EmptyFields(t *testing.T) {
 	assert.Equal(t, expectedMevGasPrice.String(), tx.MevGasPrice.ToInt().String())
 	assert.Equal(t, expectedGasUsed.String(), tx.GasUsed.ToInt().String())
 }
+
 func TestPendingTransaction_UnmarshalJSON_MissingFields(t *testing.T) {
 	rawJSON := `{
 		"to": "0x1234567890abcdef1234567890abcdef12345678"
