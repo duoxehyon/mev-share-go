@@ -16,4 +16,5 @@
 
 * [ ] `make lint`
 * [ ] `make test`
+* [ ] `make fmt`
 * [ ] `go mod tidy`
