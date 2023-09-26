@@ -12,6 +12,8 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/holiman/uint256 v1.2.3 // indirect
+	github.com/metachris/flashbotsrpc v0.6.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect

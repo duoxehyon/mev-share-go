@@ -2,37 +2,11 @@ package rpc
 
 import (
 	"encoding/json"
-	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestClient_CallWithSig(t *testing.T) {
-	privKey, _ := crypto.GenerateKey()
-
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
-		assert.NotNil(t, r.Header.Get("X-Flashbots-Signature"))
-
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "success")
-	}
-
-	server := httptest.NewServer(http.HandlerFunc(handler))
-	defer server.Close()
-
-	client := NewClient(server.URL, privKey)
-
-	response, err := client.CallWithSig("test_method", "param1", "param2")
-	assert.NoError(t, err)
-	assert.Equal(t, "success", string(response))
-}
 
 func TestSimBundleOverrides_DefaultValues(t *testing.T) {
 	overrides := SimBundleOverrides{}

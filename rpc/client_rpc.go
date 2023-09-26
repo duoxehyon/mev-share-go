@@ -1,17 +1,13 @@
 package rpc
 
 import (
-	"bytes"
 	"crypto/ecdsa"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
-	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/metachris/flashbotsrpc"
 )
 
 // RequestBody represents the JSON-RPC request body for mev_sendBundle API.
@@ -24,9 +20,10 @@ type RequestBody struct {
 
 // RPC client
 type Client struct {
-	httpClient *http.Client
-	privKey    *ecdsa.PrivateKey
-	baseURL    string
+	httpClient      *http.Client
+	flashbotsClient *flashbotsrpc.FlashbotsRPC
+	privKey         *ecdsa.PrivateKey
+	baseURL         string
 }
 
 // If request returns an error
@@ -49,58 +46,25 @@ type Response[T any] struct {
 
 // NewClient creates a new instance of the API client
 func NewClient(clientURL string, auth *ecdsa.PrivateKey) MevAPIClient {
+	flashbotsClient := flashbotsrpc.New(clientURL)
+
 	return &Client{
-		httpClient: &http.Client{},
-		baseURL:    clientURL,
-		privKey:    auth,
+		httpClient:      &http.Client{},
+		flashbotsClient: flashbotsClient,
+		baseURL:         clientURL,
+		privKey:         auth,
 	}
 }
 
 // Does api requests with Flashbots signature header
 // returns the body
 func (c *Client) CallWithSig(method string, params ...interface{}) ([]byte, error) {
-	request := RequestBody{
-		ID:      777,
-		JSONRPC: "2.0",
-		Method:  method,
-		Params:  params,
-	}
-
-	body, err := json.Marshal(request)
+	res, err := c.flashbotsClient.CallWithFlashbotsSignature(method, c.privKey, params...)
 	if err != nil {
 		return nil, err
 	}
 
-	hashedBody := crypto.Keccak256Hash([]byte(body)).Hex()
-	sig, err := crypto.Sign(accounts.TextHash([]byte(hashedBody)), c.privKey)
-	if err != nil {
-		return nil, err
-	}
-
-	signature := crypto.PubkeyToAddress(c.privKey.PublicKey).Hex() + ":" + hexutil.Encode(sig)
-
-	req, err := http.NewRequest("POST", c.baseURL, bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("X-Flashbots-Signature", signature)
-
-	response, err := c.httpClient.Do(req)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return res, nil
 }
 
 // Send private transaction ~`eth_sendPrivateTransaction`
