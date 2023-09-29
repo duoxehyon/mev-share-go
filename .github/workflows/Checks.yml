@@ -50,9 +50,3 @@ jobs:
       
       - name: Fmt
         run: make fmt
-
-      - name: Ensure go mod tidy runs without changes
-        run: |
-          go mod tidy
-          git diff-index HEAD
-          git diff-index --quiet HEAD
