@@ -30,7 +30,7 @@ func main() {
 			fmt.Println("Error occured: ", event.Error)
 		}
 
-		fmt.Println(event)
+		fmt.Println(event.Data)
 
 		// The channel will stop receiving events after this
 		sub.Stop()

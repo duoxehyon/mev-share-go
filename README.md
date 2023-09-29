@@ -58,54 +58,60 @@ Example on how to send bundles using this client
 package main
 
 import (
-	"github.com/duoxehyon/mev-share-go/rpc" // Import the RPC client
-
+	"encoding/hex"
 	"fmt"
 	"log"
+
+	"github.com/duoxehyon/mev-share-go/rpc"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/flashbots/mev-share-node/mevshare"
 )
 
 func main() {
-	// Initialize flashbots auth key. this key is only used for searcher reputation and is not required to hold any funds   
+	// Flashbots header signing key
 	fbSigningKey, err := crypto.HexToECDSA("0000000000000000000000000000000000000000000000000000000000000001")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Create a new client
+	// Initialize the client
 	client := rpc.NewClient("https://relay.flashbots.net", fbSigningKey)
 
+	// Convert the hex string to bytes
+	bytes, err := hex.DecodeString("signed raw transaction")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	txBytes := hexutil.Bytes(bytes)
+
 	// Define the bundle transactions
-	txns := []rpc.BundleItem{
-		rpc.MevShareTxHash{
-			Hash: "0x......", // hash from an mev-share event
-		},
-		rpc.SignedRawTx{
-			Tx:        "0x......", // signed raw transaction
-			CanRevert: false,
+	txns := []mevshare.MevBundleBody{
+		{
+			Tx: &txBytes,
 		},
 	}
 
-	// Define the block to include / max block to include
-	inclusion := rpc.Inclusion{
-		Block: 17891729,
+	inclusion := mevshare.MevBundleInclusion{
+		BlockNumber: 17891729,
 	}
 
 	// Make the bundle
-	req := rpc.MevSendBundleParams{
+	req := mevshare.SendMevBundleArgs{
 		Body:      txns,
 		Inclusion: inclusion,
 	}
-
-	// Send it
+	// Send bundle
 	res, err := client.SendBundle(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Returns a bundle hash which is unique to every bundle 
-	fmt.Println(res.BundleHash)
+	fmt.Println(res.BundleHash.String())
 }
+
 ```
 
 ## Sending Private Transactions

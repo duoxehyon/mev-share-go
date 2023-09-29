@@ -1,45 +1,10 @@
 package rpc
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/stretchr/testify/assert"
 )
-
-func TestSimBundleOverrides_DefaultValues(t *testing.T) {
-	overrides := SimBundleOverrides{}
-	assert.Equal(t, hexutil.Uint64(0), overrides.ParentBlock)
-	assert.Nil(t, overrides.BlockNumber)
-}
-
-func TestBundlePrivacy_MarshalJSON(t *testing.T) {
-	hints := Hints{
-		CallData:         true,
-		ContractAddress:  true,
-		FunctionSelector: true,
-		Logs:             true,
-		TxHash:           true,
-		SpecialLogs:      true,
-		Hash:             true,
-	}
-
-	bundlePrivacy := BundlePrivacy{
-		Hints:    hints,
-		Builders: []string{"builder1", "builder2"},
-	}
-
-	expectedJSON := `{"hints":["calldata","contract_address","function_selector","logs","tx_hash","hash","special_logs"],"builders":["builder1","builder2"]}`
-
-	actualJSON, err := json.Marshal(bundlePrivacy)
-	if err != nil {
-		t.Errorf("Error marshaling BundlePrivacy: %v", err)
-	}
-	if string(actualJSON) != expectedJSON {
-		t.Errorf("Expected JSON: %s, but got: %s", expectedJSON, string(actualJSON))
-	}
-}
 
 func TestEncodePrivateTxParams(t *testing.T) {
 	signedTx := "0x0"

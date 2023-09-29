@@ -1,12 +1,15 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"log"
 
 	"github.com/duoxehyon/mev-share-go/rpc"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	geth_rpc "github.com/ethereum/go-ethereum/rpc"
+	"github.com/flashbots/mev-share-node/mevshare"
 )
 
 func main() {
@@ -17,30 +20,38 @@ func main() {
 
 	client := rpc.NewClient("https://relay.flashbots.net", fbSigningKey)
 
+	// Convert the hex string to bytes
+	bytes, err := hex.DecodeString("signed raw transaction")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	txBytes := hexutil.Bytes(bytes)
+
 	// Define the bundle transactions
-	txns := []rpc.BundleItem{
-		rpc.MevShareTxHash{
-			Hash: "0x......", // hash from an mev-share event
-		},
-		rpc.SignedRawTx{
-			Tx:        "0x......", // signed raw transaction
-			CanRevert: false,
+	txns := []mevshare.MevBundleBody{
+		{
+			Tx: &txBytes,
 		},
 	}
 
-	inclusion := rpc.Inclusion{
-		Block: 17891729,
+	inclusion := mevshare.MevBundleInclusion{
+		BlockNumber: 17891729,
 	}
 
 	// Make the bundle
-	req := rpc.MevSendBundleParams{
+	req := mevshare.SendMevBundleArgs{
 		Body:      txns,
 		Inclusion: inclusion,
 	}
 
+	block := geth_rpc.BlockNumber(100)
+	parentBlock := geth_rpc.BlockNumberOrHash{BlockNumber: &block}
+
 	// Add overrides
-	overrides := rpc.SimBundleOverrides{
-		ParentBlock: hexutil.Uint64(1000000),
+	overrides := mevshare.SimMevBundleAuxArgs{
+		ParentBlock: &parentBlock,
 	}
 
 	// Simulate the bundle
