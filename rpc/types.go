@@ -14,9 +14,8 @@ type Hints struct {
 	ContractAddress  bool
 	FunctionSelector bool
 	Logs             bool
+	DefaultLogs      bool
 	TxHash           bool
-	Hash             bool
-	SpecialLogs      bool
 }
 
 func (h *Hints) String() []string {
@@ -33,15 +32,13 @@ func (h *Hints) String() []string {
 	if h.Logs {
 		hints = append(hints, "logs")
 	}
+	if h.DefaultLogs {
+		hints = append(hints, "default_logs")
+	}
 	if h.TxHash {
 		hints = append(hints, "tx_hash")
 	}
-	if h.Hash {
-		hints = append(hints, "hash")
-	}
-	if h.SpecialLogs {
-		hints = append(hints, "special_logs")
-	}
+	// hints = append(hints, "hash")
 
 	return hints
 }
@@ -54,27 +51,32 @@ type PrivateTxOptions struct {
 }
 
 // Encodes data for mev_sendPrivateTransaction
-func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) any {
+func encodePrivateTxParams(signedTx string, options *PrivateTxOptions) interface{} {
+	// Create the Privacy struct
+	privacy := struct {
+		Hints []string `json:"hints,omitempty"`
+	}{
+		Hints: options.Hints.String(),
+	}
+
+	preferences := struct {
+		Fast     bool        `json:"fast"`
+		Privacy  interface{} `json:"privacy,omitempty"`
+		Builders []string    `json:"builders,omitempty"`
+	}{
+		Fast:     true,
+		Privacy:  privacy,
+		Builders: options.Builders,
+	}
+
 	data := struct {
 		Tx             string         `json:"tx"`
 		MaxBlockNumber hexutil.Uint64 `json:"maxBlockNumber,omitempty"`
-		Preferences    struct {
-			Fast     bool     `json:"fast"`
-			Privacy  []string `json:"privacy,omitempty"`
-			Builders []string `json:"builders,omitempty"`
-		} `json:"preferences"`
+		Preferences    interface{}    `json:"preferences"`
 	}{
 		Tx:             signedTx,
 		MaxBlockNumber: options.MaxBlockNumber,
-		Preferences: struct {
-			Fast     bool     `json:"fast"`
-			Privacy  []string `json:"privacy,omitempty"`
-			Builders []string `json:"builders,omitempty"`
-		}{
-			Fast:     true,
-			Privacy:  options.Hints.String(),
-			Builders: options.Builders,
-		},
+		Preferences:    preferences,
 	}
 
 	return data

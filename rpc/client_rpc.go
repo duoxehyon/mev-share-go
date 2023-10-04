@@ -57,10 +57,23 @@ func (c *Client) SendPrivateTransaction(signedRawTx string, options *PrivateTxOp
 	return &decoded, nil
 }
 
+type (
+	SendMevBundleArgs     = mevshare.SendMevBundleArgs
+	SendMevBundleResponse = mevshare.SendMevBundleResponse
+	MevBundleBody         = mevshare.MevBundleBody
+	Inclusion             = mevshare.MevBundleInclusion
+	Validity              = mevshare.MevBundleValidity
+	Refund                = mevshare.RefundConstraint
+	RefundConfig          = mevshare.RefundConfig
+	Privacy               = mevshare.MevBundlePrivacy
+	HintIntent            = mevshare.HintIntent
+	MetaData              = mevshare.MevBundleMetadata
+)
+
 // Send mev-share bundle  ~`mev_sendBundle`
 // bundle - the bundle with all transactions / hashes
 // returns the bundle hash / error
-func (c *Client) SendBundle(bundle mevshare.SendMevBundleArgs) (*mevshare.SendMevBundleResponse, error) {
+func (c *Client) SendBundle(bundle SendMevBundleArgs) (*mevshare.SendMevBundleResponse, error) {
 	bundle.Version = "v0.1"
 	res, err := c.CallWithSig("mev_sendBundle", bundle)
 	if err != nil {
@@ -75,6 +88,11 @@ func (c *Client) SendBundle(bundle mevshare.SendMevBundleArgs) (*mevshare.SendMe
 
 	return &decoded, nil
 }
+
+type (
+	SimMevBundleAuxArgs  = mevshare.SimMevBundleAuxArgs
+	SimMevBundleResponse = mevshare.SimMevBundleResponse
+)
 
 // Simulate bundle ~`mev_simBundle`
 // bundle - the bundle with all transactions / hashes

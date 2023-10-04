@@ -78,11 +78,10 @@ func TestHints_String(t *testing.T) {
 		FunctionSelector: true,
 		Logs:             true,
 		TxHash:           true,
-		Hash:             true,
-		SpecialLogs:      true,
+		DefaultLogs:      true,
 	}
 
-	expectedHints := []string{"calldata", "contract_address", "function_selector", "logs", "tx_hash", "hash", "special_logs"}
+	expectedHints := []string{"calldata", "contract_address", "function_selector", "logs", "tx_hash", "hash", "default_logs"}
 	actualHints := hints.String()
 
 	if len(actualHints) != len(expectedHints) {

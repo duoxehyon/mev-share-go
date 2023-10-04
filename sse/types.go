@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/duoxehyon/mev-share-go/shared"
+	"github.com/duoxehyon/mev-share-go/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
@@ -19,7 +19,7 @@ type Event struct {
 // MatchMakerEvent represents the pending transaction hints sent by matchmaker
 type MatchMakerEvent struct {
 	Hash        common.Hash          `json:"hash"`
-	Logs        []shared.Log         `json:"logs,omitempty"`
+	Logs        []types.Log          `json:"logs,omitempty"`
 	Txs         []PendingTransaction `json:"txs,omitempty"`
 	MevGasPrice *hexutil.Big         `json:"mevGasPrice,omitempty"`
 	GasUsed     *hexutil.Big         `json:"gasUsed,omitempty"`

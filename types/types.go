@@ -1,5 +1,5 @@
-// Package shared is for types that are used in both sse and rpc packages
-package shared
+// Package types is for types that are used in both sse and rpc packages
+package types
 
 import (
 	"encoding/hex"
