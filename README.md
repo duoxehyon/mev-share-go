@@ -156,5 +156,5 @@ For more usage examples, explore the /examples directory in the library reposito
 
 Licensed under:
 
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or
+* MIT license ([LICENSE-MIT](LICENSE) or
   https://opensource.org/licenses/MIT)
